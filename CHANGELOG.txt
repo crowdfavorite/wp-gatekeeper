@@ -1,4 +1,7 @@
-1.1 ---
+1.5 ---
 	- Changed name from "Gatekeeper" to "CF Gatekeeper"
 	- Adding a check for the function that's run on plugin activation, it was throwing fatal errors (only on activation) b/c the object wasn't defined yet.
-	
+	- Change plugin so that it's not enabled by default.  You must go to the settings page, and click to enable it.
+		- Add appropriate checks for plugin being enabled/disabled.
+		- Add `do_action` functions on plugin enabling/disabling so that we can hook on those actions.
+		
