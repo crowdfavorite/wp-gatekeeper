@@ -1,11 +1,10 @@
 <?php
-
 /*
-Plugin Name: Gatekeeper
+Plugin Name: CF Gatekeeper
 Description: Redirect to login page if the user is not logged in.
 Author: Crowd Favorite
 Author URI: http://crowdfavorite.com
-Version: 1.0
+Version: 1.1(trunk)
 */
 
 define('CF_GATEKEEPER', true);
@@ -20,6 +19,7 @@ else if (is_file(trailingslashit(ABSPATH.PLUGINDIR).'cf-gatekeeper/cf-gatekeeper
 	define('CFSZ_FILE', trailingslashit(ABSPATH.PLUGINDIR).'cf-gatekeeper/cf-gatekeeper.php');
 }
 
+/* Do inital assignment of cf_user_key's */
 register_activation_hook(CFSZ_FILE, 'cfgk_process_users');
 
 load_plugin_textdomain('cf_gatekeeper');
@@ -33,25 +33,28 @@ function cf_gatekeeper() {
 			is_ssl() ? $proto = 'https://' : $proto = 'http://';
 			$requested = $proto.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 			if (substr($requested, 0, strlen($login_page)) != $login_page) {
+				error_log("auth_redirect");
 				auth_redirect();
 			}
 		}
 	}
 }
+
+// todo: Do a check of the privacy setting of the blog here
 add_action('init', 'cf_gatekeeper');
 
 class cf_user_api {
 	function generate_key($user_id) {
 		return md5($user_id.AUTH_KEY);
 	}
-	
+
 	function add_key_to_user($user_id, $key = null) {
 		if (is_null($key)) {
 			$key = $this->generate_key($user_id);
 		}
 		update_usermeta($user_id, 'cf_user_key', $key);
 	}
-	
+
 	function process_users() {
 		global $wpdb;
 		$keyed_users = $wpdb->get_results("
@@ -81,7 +84,7 @@ class cf_user_api {
 			}
 		}
 	}
-	
+
 	function key_login() {
 		if (!empty($_GET['cf_user_key'])) {
 			global $wpdb;
@@ -103,6 +106,12 @@ class cf_user_api {
 
 function cfgk_process_users() {
 	global $cf_user_api;
+	
+	/* Make sure we have an object to deal with.  This was throwing 
+	Fatal Errors on plugin activation without the check. */
+	if (!$cf_user_api) { 
+		$cf_user_api = new cf_user_api(); 
+	}
 	$cf_user_api->process_users();
 }
 

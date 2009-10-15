@@ -1,0 +1,4 @@
+1.1 ---
+	- Changed name from "Gatekeeper" to "CF Gatekeeper"
+	- Adding a check for the function that's run on plugin activation, it was throwing fatal errors (only on activation) b/c the object wasn't defined yet.
+	
