@@ -43,7 +43,6 @@ function cf_gatekeeper() {
 			is_ssl() ? $proto = 'https://' : $proto = 'http://';
 			$requested = $proto.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 			if (substr($requested, 0, strlen($login_page)) != $login_page) {
-				error_log("auth_redirect");
 				auth_redirect();
 			}
 		}
@@ -184,7 +183,6 @@ if (CFGK_ENABLED) {
 	add_action('show_user_profile', 'cfgk_show_api_key');
 	add_action('edit_user_profile', 'cfgk_show_api_key');
 }
-
 function cfgk_request_handler(){
 	if (isset($_POST['cf_action'])) {
 		switch ($_POST['cf_action']) {
@@ -208,6 +206,9 @@ function cfgk_request_handler(){
 					wp_redirect(basename($_SERVER['SCRIPT_NAME']).'?page='.$_GET['page'].'&updated=true&message='.$message_id);
 					exit;
 				} 
+				/* Nothing updated */
+				wp_redirect(basename($_SERVER['SCRIPT_NAME']).'?page='.$_GET['page']);
+				exit;
 				break;
 			default:
 				break;
