@@ -4,4 +4,4 @@
 	- Change plugin so that it's not enabled by default.  You must go to the settings page, and click to enable it.
 		- Add appropriate checks for plugin being enabled/disabled.
 		- Add `do_action` functions on plugin enabling/disabling so that we can hook on those actions.
-		
+		- Add a message action, so that sites can add custom instructions upon disable/enable.

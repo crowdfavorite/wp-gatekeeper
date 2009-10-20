@@ -192,18 +192,23 @@ function cfgk_request_handler(){
 				if (update_option('cfgk_enabled', $_POST['cfgk_enable_gatekeeper'])) {
 					if (get_option('cfgk_enabled')) {
 						do_action('cfgk_enabled');
+						$message_id = 1;
 					}
 					else {
 						do_action('cfgk_disabled');
+						$message_id = 2;
 					}
+					
+					$query_args = array(
+						'page' => $_GET['page'],
+						'updated' => true,
+						'message' => $message_id
+					);
+					/* Redirect properly, with a message id */
+					wp_redirect(basename($_SERVER['SCRIPT_NAME']).'?page='.$_GET['page'].'&updated=true&message='.$message_id);
+					exit;
 				} 
-				if ($_GET['updated']) {
-					wp_redirect($_SERVER['REQUEST_URI']);
-				}
-				else {
-					wp_redirect($_SERVER['REQUEST_URI'].'&updated=true');
-				}
-				exit;
+				break;
 			default:
 				break;
 		}
@@ -234,6 +239,7 @@ function cfgk_settings_form() {
 	?>
 	<div class="wrap">
 		<h2>CF Gatekeeper</h2>
+		<?php do_action('cfgk_settings_form_notices', $_GET['message']); ?>
 		<form method="post">
 			<div>
 			<label for="cfgk_enable_gatekeeper">Enable Gatekeeper?</label>
