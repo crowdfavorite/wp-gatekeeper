@@ -4,7 +4,7 @@ Plugin Name: CF Gatekeeper
 Description: Redirect to login page if the user is not logged in.
 Author: Crowd Favorite
 Author URI: http://crowdfavorite.com
-Version: 1.5
+Version: 1.5.1
 */
 
 define('CF_GATEKEEPER', true);
@@ -55,6 +55,8 @@ if (CFGK_ENABLED) {
 }
 
 class cf_user_api {
+	function cf_user_api() {
+	}
 	function generate_key($user_id) {
 		return md5($user_id.AUTH_KEY);
 	}
@@ -73,13 +75,21 @@ class cf_user_api {
 			FROM $wpdb->usermeta 
 			WHERE meta_key = 'cf_user_key'
 		");
+
 		$user_ids = array();
 		foreach ($keyed_users as $user_id) {
-			$user_ids[] = $user_id;
+			if (is_object($user_id)) {
+				$user_ids[] = $user_id->user_id;
+			}
+			else if (is_int($user_id)) {
+				$user_ids[] = $user_id;
+			}
+			else {
+				return;
+			}
 		}
-		if (count($user_ids)) {
-			$where = ' WHERE ID NOT IN ('.implode(',', $user_ids).') ';
-
+		if (is_array($user_ids) && count($user_ids) > 0) {
+			$where = ' WHERE ID NOT IN ('.implode(', ', $user_ids).') ';
 		}
 		else {
 			$where = ' ';
@@ -89,6 +99,7 @@ class cf_user_api {
 			FROM $wpdb->users
 			$where
 		");
+
 		if (count($users)) {
 			foreach ($users as $user) {
 				$this->add_key_to_user($user->ID);
@@ -120,7 +131,7 @@ function cfgk_process_users() {
 	
 	/* Make sure we have an object to deal with.  This was throwing 
 	Fatal Errors on plugin activation without the check. */
-	if (!$cf_user_api) { 
+	if (!is_object($cf_user_api)) { 
 		$cf_user_api = new cf_user_api(); 
 	}
 	$cf_user_api->process_users();
