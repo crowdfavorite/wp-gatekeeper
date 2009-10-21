@@ -4,7 +4,7 @@ Plugin Name: CF Gatekeeper
 Description: Redirect to login page if the user is not logged in.
 Author: Crowd Favorite
 Author URI: http://crowdfavorite.com
-Version: 1.5(trunk)
+Version: 1.5
 */
 
 define('CF_GATEKEEPER', true);
