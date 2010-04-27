@@ -1,5 +1,9 @@
 # CF Gatekeeper Changelog
 
+## 1.5.2
+- Added readme file
+- Tested successfully on WordPress 3.0
+
 ## 1.5.1
 - *BUGFIX* 
 	- Fix random fatal error on plugin activation because some versions of WordPress pass an object instead of an integer value, as the results of a query.  
