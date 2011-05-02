@@ -1,5 +1,11 @@
 # CF Gatekeeper Changelog
 
+## 1.6
+
+- Setup plugin to Enable blocking whenever the plugin is active
+- Removed all Admin interfaces, and options for enabling blocking
+- Tested successfully on WordPress 3.1.2
+
 ## 1.5.2
 - Added readme file
 - Tested successfully on WordPress 3.0

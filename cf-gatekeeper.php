@@ -4,10 +4,11 @@ Plugin Name: CF Gatekeeper
 Description: Redirect to login page if the user is not logged in.
 Author: Crowd Favorite
 Author URI: http://crowdfavorite.com
-Version: 1.5.2
+Version: 1.6
 */
 
 define('CF_GATEKEEPER', true);
+define('CFGK_VER', '1.6');
 
 if (!defined('PLUGINDIR')) {
 	define('PLUGINDIR','wp-content/plugins');
@@ -25,14 +26,8 @@ register_activation_hook(CFGK_FILE, 'cfgk_process_users');
 /* Load localization library */
 load_plugin_textdomain('cf_gatekeeper');
 
-/* Define if we're enabled */
-if (get_option('cfgk_enabled')) {
-	define('CFGK_ENABLED', true);
-}
-else {
-	define('CFGK_ENABLED', false);
-}
-
+/* Define that we're enabled */
+define('CFGK_ENABLED', true);
 
 function cf_gatekeeper() {
 	global $userdata;
@@ -48,11 +43,7 @@ function cf_gatekeeper() {
 		}
 	}
 }
-
-/* See if we're enabled */
-if (CFGK_ENABLED) {
-	add_action('init', 'cf_gatekeeper');	
-}
+add_action('init', 'cf_gatekeeper');	
 
 class cf_user_api {
 	function cf_user_api() {
@@ -145,13 +136,10 @@ function cfgk_add_key_to_user($user_id, $unused = null) {
 	$cf_user_api->add_key_to_user($user_id);
 }
 
-/* See if we're enabled */
-if (CFGK_ENABLED) {
-	$cf_user_api = new cf_user_api();
+$cf_user_api = new cf_user_api();
 
-	add_action('user_register', 'cfgk_add_key_to_user');
-	add_action('profile_update', 'cfgk_add_key_to_user');
-}
+add_action('user_register', 'cfgk_add_key_to_user');
+add_action('profile_update', 'cfgk_add_key_to_user');
 
 function cfgk_user_api_feeds($url) {
 	global $userdata;
@@ -168,15 +156,13 @@ function cfgk_user_api_feeds($url) {
 	}
 	return $url;
 }
-/* See if we're enabled */
-if (CFGK_ENABLED) {
-	add_filter('feed_link', 'cfgk_user_api_feeds');
-	add_filter('category_feed_link', 'cfgk_user_api_feeds');
-	add_filter('tag_feed_link', 'cfgk_user_api_feeds');
-	add_filter('search_feed_link', 'cfgk_user_api_feeds');
-	add_filter('author_feed_link', 'cfgk_user_api_feeds');
-	add_filter('post_comments_feed_link', 'cfgk_user_api_feeds');
-}
+add_filter('feed_link', 'cfgk_user_api_feeds');
+add_filter('category_feed_link', 'cfgk_user_api_feeds');
+add_filter('tag_feed_link', 'cfgk_user_api_feeds');
+add_filter('search_feed_link', 'cfgk_user_api_feeds');
+add_filter('author_feed_link', 'cfgk_user_api_feeds');
+add_filter('post_comments_feed_link', 'cfgk_user_api_feeds');
+
 function cfgk_show_api_key() {
 	global $profileuser;
 	$key = get_usermeta($profileuser->ID, 'cf_user_key');
@@ -189,11 +175,9 @@ function cfgk_show_api_key() {
 </table>
 <?php
 }
-/* See if we're enabled */
-if (CFGK_ENABLED) {
-	add_action('show_user_profile', 'cfgk_show_api_key');
-	add_action('edit_user_profile', 'cfgk_show_api_key');
-}
+add_action('show_user_profile', 'cfgk_show_api_key');
+add_action('edit_user_profile', 'cfgk_show_api_key');
+
 function cfgk_request_handler(){
 	if (isset($_POST['cf_action'])) {
 		switch ($_POST['cf_action']) {
@@ -263,6 +247,12 @@ function cfgk_settings_form() {
 	</div>
 	<?php
 }
+
+/**
+ * 
+ * Removing for this version 
+ * 
+ */
 function cfgk_admin_menu() {
 	if (current_user_can('manage_options')) {
 		add_options_page(
@@ -274,5 +264,5 @@ function cfgk_admin_menu() {
 		);
 	}
 }
-add_action('admin_menu', 'cfgk_admin_menu');
+/* add_action('admin_menu', 'cfgk_admin_menu'); */
 ?>
