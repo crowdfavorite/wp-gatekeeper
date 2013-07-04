@@ -4,11 +4,11 @@ Plugin Name: CF Gatekeeper
 Description: Redirect to login page if the user is not logged in.
 Author: Crowd Favorite
 Author URI: http://crowdfavorite.com
-Version: 1.6
+Version: 1.7
 */
 
 define('CF_GATEKEEPER', true);
-define('CFGK_VER', '1.6');
+define('CFGK_VER', '1.7');
 
 if (!defined('PLUGINDIR')) {
 	define('PLUGINDIR','wp-content/plugins');
@@ -30,24 +30,28 @@ load_plugin_textdomain('cf_gatekeeper');
 define('CFGK_ENABLED', true);
 
 function cf_gatekeeper() {
-	global $userdata;
-	if (!isset($userdata) || empty($userdata->ID)) {
+	global $current_user;
+	if (!isset($current_user) || empty($current_user->ID)) {
 		global $cf_user_api;
-		if (!$cf_user_api->key_login()) {
-			$login_page = site_url('wp-login.php');
-			is_ssl() ? $proto = 'https://' : $proto = 'http://';
-			$requested = $proto.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-			if (substr($requested, 0, strlen($login_page)) != $login_page) {
-				auth_redirect();
-			}
+		$cf_user_api->key_login();
+	}
+	if (!current_user_can('publish_posts')) {
+		$login_page = site_url('wp-login.php');
+		is_ssl() ? $proto = 'https://' : $proto = 'http://';
+		$requested = $proto.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+		if (substr($requested, 0, strlen($login_page)) != $login_page) {
+			auth_redirect();
 		}
 	}
 }
-add_action('init', 'cf_gatekeeper');	
+if (!defined('XMLRPC_REQUEST')) {
+	add_action('init', 'cf_gatekeeper');	
+}
 
 class cf_user_api {
 	function cf_user_api() {
 	}
+
 	function generate_key($user_id) {
 		return md5($user_id.AUTH_KEY);
 	}
@@ -109,7 +113,7 @@ class cf_user_api {
 			");
 			$user_id = intval($user_id);
 			if ($user_id > 0) {
-				setup_userdata($user_id);
+				wp_set_current_user($user_id);
 				return true;
 			}
 		}
