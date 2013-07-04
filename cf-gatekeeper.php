@@ -11,13 +11,13 @@ define('CF_GATEKEEPER', true);
 define('CFGK_VER', '1.7');
 
 if (!defined('PLUGINDIR')) {
-	define('PLUGINDIR','wp-content/plugins');
+	@define('PLUGINDIR','wp-content/plugins');
 }
 if (is_file(trailingslashit(ABSPATH.PLUGINDIR).'cf-gatekeeper.php')) {
-	define('CFGK_FILE', trailingslashit(ABSPATH.PLUGINDIR).'cf-gatekeeper.php');
+	@define('CFGK_FILE', trailingslashit(ABSPATH.PLUGINDIR).'cf-gatekeeper.php');
 }
 else if (is_file(trailingslashit(ABSPATH.PLUGINDIR).'cf-gatekeeper/cf-gatekeeper.php')) {
-	define('CFGK_FILE', trailingslashit(ABSPATH.PLUGINDIR).'cf-gatekeeper/cf-gatekeeper.php');
+	@define('CFGK_FILE', trailingslashit(ABSPATH.PLUGINDIR).'cf-gatekeeper/cf-gatekeeper.php');
 }
 
 /* Do inital assignment of cf_user_key's */
