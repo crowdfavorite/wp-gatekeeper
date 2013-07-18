@@ -4,30 +4,16 @@ Plugin Name: CF Gatekeeper
 Description: Redirect to login page if the user is not logged in.
 Author: Crowd Favorite
 Author URI: http://crowdfavorite.com
-Version: 1.7
+Version: 1.8
 */
 
+error_log('test');
+
 define('CF_GATEKEEPER', true);
-define('CFGK_VER', '1.7');
-
-if (!defined('PLUGINDIR')) {
-	@define('PLUGINDIR','wp-content/plugins');
-}
-if (is_file(trailingslashit(ABSPATH.PLUGINDIR).'cf-gatekeeper.php')) {
-	@define('CFGK_FILE', trailingslashit(ABSPATH.PLUGINDIR).'cf-gatekeeper.php');
-}
-else if (is_file(trailingslashit(ABSPATH.PLUGINDIR).'cf-gatekeeper/cf-gatekeeper.php')) {
-	@define('CFGK_FILE', trailingslashit(ABSPATH.PLUGINDIR).'cf-gatekeeper/cf-gatekeeper.php');
-}
-
-/* Do inital assignment of cf_user_key's */
-register_activation_hook(CFGK_FILE, 'cfgk_process_users');
+define('CFGK_VER', '1.8');
 
 /* Load localization library */
 load_plugin_textdomain('cf_gatekeeper');
-
-/* Define that we're enabled */
-define('CFGK_ENABLED', true);
 
 function cf_gatekeeper() {
 	global $current_user;
@@ -134,6 +120,9 @@ function cfgk_process_users() {
 	/* Don't turn on by default */
 	update_option('cfgk_enabled', '0');
 }
+/* Do inital assignment of cf_user_key's */
+add_action('admin_init', 'cfgk_process_users');
+
 
 function cfgk_add_key_to_user($user_id, $unused = null) {
 	global $cf_user_api;
@@ -173,7 +162,7 @@ function cfgk_show_api_key() {
 ?>
 <table class="form-table">
 <tr>
-	<th><label for="description"><?php _e('API Key', 'cf_gatekeeper'); ?></label></th>
+	<th><label for="description"><?php _e('Gatekeeper API Key', 'cf_gatekeeper'); ?></label></th>
 	<td><span><?php echo $key; ?></span></td>
 </tr>
 </table>
@@ -263,7 +252,7 @@ function cfgk_admin_menu() {
 			__('CF Gatekeeper', '')
 			, __('CF Gatekeeper', '')
 			, 10
-			, basename(CFGK_FILE)
+			, 'cf-gatekeeper'
 			, 'cfgk_settings_form'
 		);
 	}
