@@ -1,6 +1,6 @@
 ## CF Gatekeeper
 
-The CF Gatekeeper plugins provides admin users with the ability to block access to an entire site, except for users that are logged in.  When the plugin is activated, it will redirect all logged out users to the wp-login.php page.
+The CF Gatekeeper plugins provides admin users with the ability to block access to an entire site, except for users with specific capabilities. By default this is only users who can publish posts.  When the plugin is activated, it will redirect all users who do not meet the capability requirements to the wp-login.php page.
 
 The plugin also adds an API key to each user so they will have the ability to view items like RSS feeds even if CF Gatekeeper is turned on.  
 

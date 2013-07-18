@@ -7,8 +7,6 @@ Author URI: http://crowdfavorite.com
 Version: 1.8
 */
 
-error_log('test');
-
 define('CF_GATEKEEPER', true);
 define('CFGK_VER', '1.8');
 
@@ -21,7 +19,8 @@ function cf_gatekeeper() {
 		global $cf_user_api;
 		$cf_user_api->key_login();
 	}
-	if (!current_user_can('publish_posts')) {
+	$user_capability = apply_filters('cf_gakeeper_capability', 'publish_posts');
+	if (!current_user_can($user_capability)) {
 		$login_page = site_url('wp-login.php');
 		is_ssl() ? $proto = 'https://' : $proto = 'http://';
 		$requested = $proto.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
