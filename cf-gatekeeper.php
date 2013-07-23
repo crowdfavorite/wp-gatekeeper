@@ -19,8 +19,10 @@ function cf_gatekeeper() {
 		global $cf_user_api;
 		$cf_user_api->key_login();
 	}
-	$user_capability = apply_filters('cf_gakeeper_capability', 'publish_posts');
-	if (!current_user_can($user_capability)) {
+	$user_capability = apply_filters('cf_gatekeeper_capability', 'publish_posts');
+	$gatekeeper_enabled = apply_filters('cf_gatekeeper_enabled', true);
+	error_log($gatekeeper_enabled);
+	if (!current_user_can($user_capability) && $gatekeeper_enabled) {
 		$login_page = site_url('wp-login.php');
 		is_ssl() ? $proto = 'https://' : $proto = 'http://';
 		$requested = $proto.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
@@ -30,7 +32,7 @@ function cf_gatekeeper() {
 	}
 }
 if (!defined('XMLRPC_REQUEST')) {
-	add_action('init', 'cf_gatekeeper');	
+	add_action('init', 'cf_gatekeeper', 11);
 }
 
 class cf_user_api {
@@ -120,7 +122,7 @@ function cfgk_process_users() {
 	update_option('cfgk_enabled', '0');
 }
 /* Do inital assignment of cf_user_key's */
-add_action('admin_init', 'cfgk_process_users');
+add_action('init', 'cfgk_process_users');
 
 
 function cfgk_add_key_to_user($user_id, $unused = null) {
