@@ -32,9 +32,9 @@ function cf_gatekeeper() {
 	}
 }
 if (!defined('XMLRPC_REQUEST')) {
-	// This needs to run at 11 as to run after cfgk_process_users
+	// This needs to run at 11+ as to run after cfgk_process_users
 	// And to catch any filters running at default priority 10
-	add_action('init', 'cf_gatekeeper', 11);
+	add_action('init', 'cf_gatekeeper', 12);
 }
 
 class cf_user_api {
