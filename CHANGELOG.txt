@@ -1,5 +1,14 @@
 # CF Gatekeeper Changelog
 
+## 1.8
+- Cleanup unused code
+- Gatekeeper is now Always on when plugin is active
+- Removed settings screen for always on approach
+- API Key existence check and generation on admin_init not plugin activation
+- Adds filter to capability to check `cf_gatekeeper_capability`, checks publish_posts by default
+- Adjust action and priority in which gatekeeper fires to allow for setup of post types, filters etc...
+- Add filter `cf_gatekeeper_enabled` to allow conditional control over gatekeeper activation
+
 ## 1.6
 
 - Setup plugin to Enable blocking whenever the plugin is active

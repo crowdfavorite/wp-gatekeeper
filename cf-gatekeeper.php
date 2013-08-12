@@ -4,50 +4,42 @@ Plugin Name: CF Gatekeeper
 Description: Redirect to login page if the user is not logged in.
 Author: Crowd Favorite
 Author URI: http://crowdfavorite.com
-Version: 1.6
+Version: 1.8
 */
 
 define('CF_GATEKEEPER', true);
-define('CFGK_VER', '1.6');
-
-if (!defined('PLUGINDIR')) {
-	define('PLUGINDIR','wp-content/plugins');
-}
-if (is_file(trailingslashit(ABSPATH.PLUGINDIR).'cf-gatekeeper.php')) {
-	define('CFGK_FILE', trailingslashit(ABSPATH.PLUGINDIR).'cf-gatekeeper.php');
-}
-else if (is_file(trailingslashit(ABSPATH.PLUGINDIR).'cf-gatekeeper/cf-gatekeeper.php')) {
-	define('CFGK_FILE', trailingslashit(ABSPATH.PLUGINDIR).'cf-gatekeeper/cf-gatekeeper.php');
-}
-
-/* Do inital assignment of cf_user_key's */
-register_activation_hook(CFGK_FILE, 'cfgk_process_users');
+define('CFGK_VER', '1.8');
 
 /* Load localization library */
 load_plugin_textdomain('cf_gatekeeper');
 
-/* Define that we're enabled */
-define('CFGK_ENABLED', true);
-
 function cf_gatekeeper() {
-	global $userdata;
-	if (!isset($userdata) || empty($userdata->ID)) {
+	global $current_user;
+	if (!isset($current_user) || empty($current_user->ID)) {
 		global $cf_user_api;
-		if (!$cf_user_api->key_login()) {
-			$login_page = site_url('wp-login.php');
-			is_ssl() ? $proto = 'https://' : $proto = 'http://';
-			$requested = $proto.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-			if (substr($requested, 0, strlen($login_page)) != $login_page) {
-				auth_redirect();
-			}
+		$cf_user_api->key_login();
+	}
+	$user_capability = apply_filters('cf_gatekeeper_capability', 'publish_posts');
+	$gatekeeper_enabled = apply_filters('cf_gatekeeper_enabled', true);
+	if (!current_user_can($user_capability) && $gatekeeper_enabled) {
+		$login_page = site_url('wp-login.php');
+		is_ssl() ? $proto = 'https://' : $proto = 'http://';
+		$requested = $proto.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+		if (substr($requested, 0, strlen($login_page)) != $login_page) {
+			auth_redirect();
 		}
 	}
 }
-add_action('init', 'cf_gatekeeper');	
+if (!defined('XMLRPC_REQUEST')) {
+	// This needs to run at 11+ as to run after cfgk_process_users
+	// And to catch any filters running at default priority 10
+	add_action('init', 'cf_gatekeeper', 12);
+}
 
 class cf_user_api {
 	function cf_user_api() {
 	}
+
 	function generate_key($user_id) {
 		return md5($user_id.AUTH_KEY);
 	}
@@ -109,7 +101,7 @@ class cf_user_api {
 			");
 			$user_id = intval($user_id);
 			if ($user_id > 0) {
-				setup_userdata($user_id);
+				wp_set_current_user($user_id);
 				return true;
 			}
 		}
@@ -130,6 +122,9 @@ function cfgk_process_users() {
 	/* Don't turn on by default */
 	update_option('cfgk_enabled', '0');
 }
+/* Do inital assignment of cf_user_key's */
+add_action('init', 'cfgk_process_users');
+
 
 function cfgk_add_key_to_user($user_id, $unused = null) {
 	global $cf_user_api;
@@ -169,7 +164,7 @@ function cfgk_show_api_key() {
 ?>
 <table class="form-table">
 <tr>
-	<th><label for="description"><?php _e('API Key', 'cf_gatekeeper'); ?></label></th>
+	<th><label for="description"><?php _e('Gatekeeper API Key', 'cf_gatekeeper'); ?></label></th>
 	<td><span><?php echo $key; ?></span></td>
 </tr>
 </table>
@@ -259,7 +254,7 @@ function cfgk_admin_menu() {
 			__('CF Gatekeeper', '')
 			, __('CF Gatekeeper', '')
 			, 10
-			, basename(CFGK_FILE)
+			, 'cf-gatekeeper'
 			, 'cfgk_settings_form'
 		);
 	}
