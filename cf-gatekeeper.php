@@ -21,7 +21,6 @@ function cf_gatekeeper() {
 	}
 	$user_capability = apply_filters('cf_gatekeeper_capability', 'publish_posts');
 	$gatekeeper_enabled = apply_filters('cf_gatekeeper_enabled', true);
-	error_log($gatekeeper_enabled);
 	if (!current_user_can($user_capability) && $gatekeeper_enabled) {
 		$login_page = site_url('wp-login.php');
 		is_ssl() ? $proto = 'https://' : $proto = 'http://';
