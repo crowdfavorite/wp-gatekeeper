@@ -139,7 +139,7 @@ add_action('profile_update', 'cfgk_add_key_to_user');
 function cfgk_user_api_feeds($url) {
 	global $userdata;
 	if (!empty($userdata->ID)) {
-		$key = get_usermeta($userdata->ID, 'cf_user_key');
+		$key = get_usermeta($userdata->ID, 'cf_user_key', true);
 		if (!empty($key)) {
 			if (strpos($url, '?') !== false) {
 				$url .= '&amp;cf_user_key='.urlencode($key);
