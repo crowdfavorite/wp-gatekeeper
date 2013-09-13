@@ -8,7 +8,7 @@ Version: 1.8
 */
 
 define('CF_GATEKEEPER', true);
-define('CFGK_VER', '1.8');
+define('CFGK_VER', '1.8.1');
 
 /* Load localization library */
 load_plugin_textdomain('cf_gatekeeper');
@@ -19,7 +19,7 @@ function cf_gatekeeper() {
 		global $cf_user_api;
 		$cf_user_api->key_login();
 	}
-	$user_capability = apply_filters('cf_gatekeeper_capability', 'publish_posts');
+	$user_capability = apply_filters('cf_gatekeeper_capability', 'read');
 	$gatekeeper_enabled = apply_filters('cf_gatekeeper_enabled', true);
 	if (!current_user_can($user_capability) && $gatekeeper_enabled) {
 		$login_page = site_url('wp-login.php');
@@ -139,7 +139,7 @@ add_action('profile_update', 'cfgk_add_key_to_user');
 function cfgk_user_api_feeds($url) {
 	global $userdata;
 	if (!empty($userdata->ID)) {
-		$key = get_usermeta($userdata->ID, 'cf_user_key');
+		$key = get_usermeta($userdata->ID, 'cf_user_key', true);
 		if (!empty($key)) {
 			if (strpos($url, '?') !== false) {
 				$url .= '&amp;cf_user_key='.urlencode($key);

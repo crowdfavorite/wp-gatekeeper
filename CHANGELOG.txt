@@ -1,5 +1,9 @@
 # CF Gatekeeper Changelog
 
+## 1.8.1
+- Changed default capability check from publish_posts to read
+- Fixed bug which would return an array for the api key for feeds
+
 ## 1.8
 - Cleanup unused code
 - Gatekeeper is now Always on when plugin is active
