@@ -8,7 +8,7 @@ Version: 1.8
 */
 
 define('CF_GATEKEEPER', true);
-define('CFGK_VER', '1.8');
+define('CFGK_VER', '1.8.1');
 
 /* Load localization library */
 load_plugin_textdomain('cf_gatekeeper');
