@@ -1,5 +1,8 @@
 # CF Gatekeeper Changelog
 
+## 1.8.2
+- Fix use of deprecated get_usermeta function
+
 ## 1.8.1
 - Changed default capability check from publish_posts to read
 - Fixed bug which would return an array for the api key for feeds

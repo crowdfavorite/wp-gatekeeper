@@ -4,11 +4,11 @@ Plugin Name: CF Gatekeeper
 Description: Redirect to login page if the user is not logged in.
 Author: Crowd Favorite
 Author URI: http://crowdfavorite.com
-Version: 1.8
+Version: 1.8.2
 */
 
 define('CF_GATEKEEPER', true);
-define('CFGK_VER', '1.8.1');
+define('CFGK_VER', '1.8.2');
 
 /* Load localization library */
 load_plugin_textdomain('cf_gatekeeper');
@@ -139,7 +139,7 @@ add_action('profile_update', 'cfgk_add_key_to_user');
 function cfgk_user_api_feeds($url) {
 	global $userdata;
 	if (!empty($userdata->ID)) {
-		$key = get_usermeta($userdata->ID, 'cf_user_key', true);
+		$key = get_user_meta($userdata->ID, 'cf_user_key', true);
 		if (!empty($key)) {
 			if (strpos($url, '?') !== false) {
 				$url .= '&amp;cf_user_key='.urlencode($key);
@@ -160,7 +160,7 @@ add_filter('post_comments_feed_link', 'cfgk_user_api_feeds');
 
 function cfgk_show_api_key() {
 	global $profileuser;
-	$key = get_usermeta($profileuser->ID, 'cf_user_key');
+	$key = get_user_meta($profileuser->ID, 'cf_user_key');
 ?>
 <table class="form-table">
 <tr>
