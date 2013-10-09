@@ -1,6 +1,6 @@
 # CF Gatekeeper Changelog
 
-## 1.8.2-dev
+## 1.8.2
 - Fix use of deprecated get_usermeta function
 
 ## 1.8.1
