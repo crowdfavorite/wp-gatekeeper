@@ -48,7 +48,7 @@ class cf_user_api {
 		if (is_null($key)) {
 			$key = $this->generate_key($user_id);
 		}
-		update_usermeta($user_id, 'cf_user_key', $key);
+		update_user_meta($user_id, 'cf_user_key', $key);
 	}
 
 	function process_users() {
