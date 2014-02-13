@@ -4,11 +4,11 @@ Plugin Name: CF Gatekeeper
 Description: Redirect to login page if the user is not logged in.
 Author: Crowd Favorite
 Author URI: http://crowdfavorite.com
-Version: 1.8.2
+Version: 1.8.3-dev
 */
 
 define('CF_GATEKEEPER', true);
-define('CFGK_VER', '1.8.2');
+define('CFGK_VER', '1.8.3-dev');
 
 /* Load localization library */
 load_plugin_textdomain('cf_gatekeeper');
@@ -23,9 +23,10 @@ function cf_gatekeeper() {
 	$gatekeeper_enabled = apply_filters('cf_gatekeeper_enabled', true);
 	if (!current_user_can($user_capability) && $gatekeeper_enabled) {
 		$login_page = site_url('wp-login.php');
+		$activate_page = site_url('wp-activate.php');
 		is_ssl() ? $proto = 'https://' : $proto = 'http://';
 		$requested = $proto.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-		if (substr($requested, 0, strlen($login_page)) != $login_page) {
+		if (substr($requested, 0, strlen($login_page)) != $login_page && substr($requested, 0, strlen($activate_page)) != $activate_page) {
 			auth_redirect();
 		}
 	}
@@ -48,7 +49,7 @@ class cf_user_api {
 		if (is_null($key)) {
 			$key = $this->generate_key($user_id);
 		}
-		update_usermeta($user_id, 'cf_user_key', $key);
+		update_user_meta($user_id, 'cf_user_key', $key);
 	}
 
 	function process_users() {
