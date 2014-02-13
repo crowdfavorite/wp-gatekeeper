@@ -23,9 +23,10 @@ function cf_gatekeeper() {
 	$gatekeeper_enabled = apply_filters('cf_gatekeeper_enabled', true);
 	if (!current_user_can($user_capability) && $gatekeeper_enabled) {
 		$login_page = site_url('wp-login.php');
+		$activate_page = site_url('wp-activate.php');
 		is_ssl() ? $proto = 'https://' : $proto = 'http://';
 		$requested = $proto.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-		if (substr($requested, 0, strlen($login_page)) != $login_page) {
+		if (substr($requested, 0, strlen($login_page)) != $login_page && substr($requested, 0, strlen($activate_page)) != $activate_page) {
 			auth_redirect();
 		}
 	}
