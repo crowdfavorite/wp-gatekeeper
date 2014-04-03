@@ -164,8 +164,8 @@ function cfgk_show_api_key() {
 ?>
 <table class="form-table">
 <tr>
-	<th><label for="description"><?php _e('Gatekeeper API Key', 'cf_gatekeeper'); ?></label></th>
-	<td><span><?php echo $key; ?></span></td>
+	<th><label for="description"><?php echo sprintf(__('%s API Key', 'cf_gatekeeper'), 'Gatekeeper'); ?></label></th>
+	<td><span><?php echo esc_html($key); ?></span></td>
 </tr>
 </table>
 <?php
@@ -211,8 +211,8 @@ function cfgk_settings_form() {
 	$option_value = get_option('cfgk_enabled');
 
 	$enabled_options = array(
-		'Yes' => '1',
-		'No' => '0'
+		__('Yes', 'cf_gatekeeper') => '1',
+		__('No', 'cf_gatekeeper') => '0'
 	);
 
 	$radio_inputs_html = '';
@@ -233,10 +233,10 @@ function cfgk_settings_form() {
 		<?php do_action('cfgk_settings_form_notices', $_GET['message']); ?>
 		<form method="post">
 			<div>
-			<label for="cfgk_enable_gatekeeper">Enable Gatekeeper?</label>
+			<label for="cfgk_enable_gatekeeper"><?php _e('Enable Gatekeeper?', 'cf_gatekeeper'); ?></label>
 			<?php echo $radio_inputs_html; ?>
 			</div>
-			<button type="submit" class="button-primary">Save Option</button>
+			<button type="submit" class="button-primary"><?php _e('Save Option', 'cf_gatekeeper'); ?></button>
 			<input type="hidden" name="cf_action" value="save_gatekeeper_options" />
 		</form>
 	</div>
@@ -251,11 +251,11 @@ function cfgk_settings_form() {
 function cfgk_admin_menu() {
 	if (current_user_can('manage_options')) {
 		add_options_page(
-			__('CF Gatekeeper', '')
-			, __('CF Gatekeeper', '')
-			, 10
-			, 'cf-gatekeeper'
-			, 'cfgk_settings_form'
+			'CF Gatekeeper',
+			'CF Gatekeeper',
+			'activate_plugins',
+			'cf-gatekeeper',
+			'cfgk_settings_form'
 		);
 	}
 }
