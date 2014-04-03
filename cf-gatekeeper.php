@@ -55,7 +55,7 @@ class cf_user_api {
 		global $wpdb;
 		$keyed_users = $wpdb->get_results("
 			SELECT user_id
-			FROM $wpdb->usermeta 
+			FROM $wpdb->usermeta
 			WHERE meta_key = 'cf_user_key'
 		");
 
@@ -111,14 +111,14 @@ class cf_user_api {
 
 function cfgk_process_users() {
 	global $cf_user_api;
-	
-	/* Make sure we have an object to deal with.  This was throwing 
+
+	/* Make sure we have an object to deal with.  This was throwing
 	Fatal Errors on plugin activation without the check. */
-	if (!is_object($cf_user_api)) { 
-		$cf_user_api = new cf_user_api(); 
+	if (!is_object($cf_user_api)) {
+		$cf_user_api = new cf_user_api();
 	}
 	$cf_user_api->process_users();
-	
+
 	/* Don't turn on by default */
 	update_option('cfgk_enabled', '0');
 }
@@ -160,7 +160,7 @@ add_filter('post_comments_feed_link', 'cfgk_user_api_feeds');
 
 function cfgk_show_api_key() {
 	global $profileuser;
-	$key = get_user_meta($profileuser->ID, 'cf_user_key');
+	$key = get_user_meta($profileuser->ID, 'cf_user_key', true);
 ?>
 <table class="form-table">
 <tr>
@@ -186,7 +186,7 @@ function cfgk_request_handler(){
 						do_action('cfgk_disabled');
 						$message_id = 2;
 					}
-					
+
 					$query_args = array(
 						'page' => $_GET['page'],
 						'updated' => true,
@@ -195,7 +195,7 @@ function cfgk_request_handler(){
 					/* Redirect properly, with a message id */
 					wp_redirect(basename($_SERVER['SCRIPT_NAME']).'?page='.$_GET['page'].'&updated=true&message='.$message_id);
 					exit;
-				} 
+				}
 				/* Nothing updated */
 				wp_redirect(basename($_SERVER['SCRIPT_NAME']).'?page='.$_GET['page']);
 				exit;
@@ -214,7 +214,7 @@ function cfgk_settings_form() {
 		'Yes' => '1',
 		'No' => '0'
 	);
-	
+
 	$radio_inputs_html = '';
 	foreach ($enabled_options as $label => $value) {
 		if ($option_value == $value) {
@@ -244,9 +244,9 @@ function cfgk_settings_form() {
 }
 
 /**
- * 
- * Removing for this version 
- * 
+ *
+ * Removing for this version
+ *
  */
 function cfgk_admin_menu() {
 	if (current_user_can('manage_options')) {
