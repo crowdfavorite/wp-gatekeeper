@@ -15,13 +15,13 @@ load_plugin_textdomain( 'cf_gatekeeper' );
 
 function cf_gatekeeper() {
 	global $current_user;
-	if ( !isset( $current_user ) || empty( $current_user->ID ) ) {
+	if ( ! isset( $current_user ) || empty( $current_user->ID ) ) {
 		global $cf_user_api;
 		$cf_user_api->key_login();
 	}
 	$user_capability = apply_filters( 'cf_gatekeeper_capability', 'read' );
 	$gatekeeper_enabled = apply_filters( 'cf_gatekeeper_enabled', true );
-	if ( !current_user_can( $user_capability ) && $gatekeeper_enabled ) {
+	if ( ! current_user_can( $user_capability ) && $gatekeeper_enabled ) {
 		$login_page = site_url( 'wp-login.php' );
 		$network_login_page = network_site_url( 'wp-login.php' );
 		is_ssl() ? $proto = 'https://' : $proto = 'http://';
@@ -33,7 +33,7 @@ function cf_gatekeeper() {
 		}
 	}
 }
-if ( !defined( 'XMLRPC_REQUEST' ) ) {
+if ( ! defined( 'XMLRPC_REQUEST' ) ) {
 	// This needs to run at 11+ as to run after cfgk_process_users
 	// And to catch any filters running at default priority 10
 	add_action( 'init', 'cf_gatekeeper', 12 );
@@ -94,7 +94,7 @@ class cf_user_api {
 	}
 
 	function key_login() {
-		if ( !empty( $_GET['cf_user_key'] ) ) {
+		if ( ! empty( $_GET['cf_user_key'] ) ) {
 			global $wpdb;
 			$user_id = $wpdb->get_var( "
 				SELECT user_id
@@ -117,7 +117,7 @@ function cfgk_process_users() {
 
 	/* Make sure we have an object to deal with.  This was throwing
 	Fatal Errors on plugin activation without the check. */
-	if ( !is_object( $cf_user_api ) ) {
+	if ( ! is_object( $cf_user_api ) ) {
 		$cf_user_api = new cf_user_api();
 	}
 	$cf_user_api->process_users();
@@ -141,9 +141,9 @@ add_action( 'profile_update', 'cfgk_add_key_to_user' );
 
 function cfgk_user_api_feeds( $url ) {
 	global $userdata;
-	if ( !empty( $userdata->ID ) ) {
+	if ( ! empty( $userdata->ID ) ) {
 		$key = get_user_meta( $userdata->ID, 'cf_user_key', true );
-		if ( !empty( $key ) ) {
+		if ( ! empty( $key ) ) {
 			if ( strpos( $url, '?' ) !== false ) {
 				$url .= '&amp;cf_user_key='.urlencode( $key );
 			}
