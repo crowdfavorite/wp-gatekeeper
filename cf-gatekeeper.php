@@ -23,10 +23,13 @@ function cf_gatekeeper() {
 	$gatekeeper_enabled = apply_filters('cf_gatekeeper_enabled', true);
 	if (!current_user_can($user_capability) && $gatekeeper_enabled) {
 		$login_page = site_url('wp-login.php');
+		$network_login_page = network_site_url('wp-login.php');
 		is_ssl() ? $proto = 'https://' : $proto = 'http://';
 		$requested = $proto.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 		if (substr($requested, 0, strlen($login_page)) != $login_page) {
-			auth_redirect();
+			if ($login_page == $network_login_page || substr($requested, 0, strlen($network_login_page)) != $network_login_page) {
+				auth_redirect();
+			}
 		}
 	}
 }
